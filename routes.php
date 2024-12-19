@@ -31,7 +31,12 @@ switch ($_SERVER['REQUEST_METHOD']) {
     case "GET":
         switch ($request[0]) {
             case "users":
+                if(isset ($request[1])){
+                    echo json_encode($get->getUserById($request[1]));
+                }else {
                 echo json_encode($get->getAllUsers());
+                    
+                }
                 break;
             case "surveys":
                 echo json_encode($get->getSurveys($request[1] ?? null));
@@ -87,7 +92,8 @@ switch ($_SERVER['REQUEST_METHOD']) {
             case "encrypt":
                 $body = json_decode(file_get_contents("php://input"), true);
                 if (isset($body['data'])) {
-                echo $crypt->encryptData($body['data']);
+                    $response = $crypt->encryptData($body['data']);
+                    echo json_encode($response);
                 } else {
                     echo json_encode(["message" => "Data is required.", "code" => 400]);
                 }
@@ -96,11 +102,13 @@ switch ($_SERVER['REQUEST_METHOD']) {
             case "decrypt":
                 $body = json_decode(file_get_contents("php://input"), true);
                 if (isset($body['data'])) {
-                echo json_encode(["data" => $crypt->decryptData(json_encode($body))]);
+                    $response = $crypt->decryptData($body);
+                    echo json_encode($response);
                 } else {
-                echo json_encode(["message" => "Data is required.", "code" => 400]);
+                    echo json_encode(["message" => "Data is required.", "code" => 400]);
                 }
-                break;
+                    break;
+                
             default:
                 http_response_code(404);
                 echo json_encode([

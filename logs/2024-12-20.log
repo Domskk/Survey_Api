@@ -1,0 +1,40 @@
+2024-12-20 18:03:39,getAllUsers,admin,Retrieve all user
+2024-12-20 18:03:52,getAllUsers,admin,Retrieve all user
+2024-12-20 18:03:52,getAllUsers,admin,Retrieve all user
+2024-12-20 18:08:37,getSurveys,,Retrieve all surveys
+2024-12-20 18:12:14,getSurveys,guest,Retrieve all surveys
+2024-12-20 18:12:16,getSurveys,guest,Retrieve all surveys
+2024-12-20 18:14:16,getSurveys,none,Retrieve all surveys
+2024-12-20 18:14:33,getSurveys,1,Retrieve survey with ID:1
+2024-12-20 18:15:01,getSurveys,none,Retrieve all surveys
+2024-12-20 18:27:23,getAllUsers,admin,Retrieve all user
+2024-12-20 18:27:34,getByUserId,user_1,Retrieve user
+2024-12-20 18:28:22,getSurveys,survey_,Retrieve all surveys
+2024-12-20 18:28:25,getSurveys,survey_,Retrieve survey with ID: 1
+2024-12-20 18:28:56,getQuestions,none,Retrieve all questions
+2024-12-20 18:28:59,getQuestions,2,Retrieve questions with ID: 2
+2024-12-20 18:29:07,getQuestions,1,Retrieve questions with ID: 1
+2024-12-20 18:30:46,getQuestions,1,Retrieve questions with ID: 1
+2024-12-20 18:30:53,1,question_,getQuestions
+2024-12-20 18:31:40,getQuestions,question_1,Retrieve questions with ID: 1
+2024-12-20 18:32:08,getResponses,1,Retrieve response with ID: 1
+2024-12-20 18:32:08,getResponses,1,Succesfully retrieve response with questions.
+2024-12-20 18:32:45,getResponses,1,Retrieve response with ID: 1
+2024-12-20 18:32:45,getResponses,1,Succesfully retrieve response with questions.
+2024-12-20 18:32:59,getResponses,2,Retrieve response with ID: 2
+2024-12-20 18:32:59,getResponses,2,Succesfully retrieve response with questions.
+2024-12-20 18:33:06,getResponses,2,Retrieve response with ID: 2
+2024-12-20 18:33:06,getResponses,2,Succesfully retrieve response with questions.
+2024-12-20 18:33:37,getResponses,4,Retrieve response with ID: 4
+2024-12-20 18:33:37,getResponses,4,Succesfully retrieve response with questions.
+2024-12-20 18:34:22,getResponses,8,Retrieve response with ID: 8
+2024-12-20 18:34:22,getResponses,8,Failed to retrieve responses: No responses found.
+2024-12-20 18:35:35,getResponses,8,Retrieve response with ID: 8
+2024-12-20 18:38:01,getResponses,3,Retrieve response with ID: 3
+2024-12-20 18:38:24,getResponses,6,Retrieve response with ID: 6
+2024-12-20 18:38:40,getResponses,6,Retrieve response with ID: 6
+2024-12-20 18:38:40,getResponses,6,Failed to retrieve responses: No responses found.
+2024-12-20 18:38:48,getResponses,4,Retrieve response with ID: 4
+2024-12-20 18:38:48,getResponses,4,Succesfully retrieve response with questions.
+2024-12-20 18:38:59,getResponses,10,Retrieve response with ID: 10
+2024-12-20 18:38:59,getResponses,10,Failed to retrieve responses: No responses found.

@@ -1,14 +1,12 @@
 <?php
 class Common{
 
-    // protected function logger($user, $method, $action){
-    //     //datetime, user,method,action -> text file .log
-    //     $filename = date("Y-m-d") . ".log";
-    //     $datetime = date("Y-m-d H:i:s");
-    //     $logMessage = "$datetime,$method,$user,$action" . PHP_EOL;
-    //     // file_put_contents("./logs/$filename", $logMessage, FILE_APPEND | LOCK_EX);
-    //     error_log($logMessage, 3, "./logs/$filename");
-    // }
+    protected function logger($user, $method, $action){
+        $filename = date("Y-m-d") . ".log";
+        $datetime = date("Y-m-d H:i:s");
+        $logMessage = "$datetime,$method,$user,$action" . PHP_EOL;
+        error_log($logMessage, 3, "./logs/$filename");
+    }
 
     private function generateInsertString($tablename, $body){
         $keys = array_keys($body);

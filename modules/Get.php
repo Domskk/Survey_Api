@@ -1,88 +1,65 @@
 <?php
 include_once "Common.php";
-
-// class Get extends Common {
-//     protected $pdo;
-
-//     public function __construct(\PDO $pdo) {
-//         $this->pdo = $pdo;
-//     }
-//     public function getAllUsers() {
-//         $sqlString = "SELECT * FROM users_tbl";
-//         $data = [];
-//         $errmsg = "";
-//         $code = 0;
-    
-//         try {
-//             $stmt = $this->pdo->prepare($sqlString);
-//             $stmt->execute();
-    
-//             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-//             if ($result) {
-//                 $data = $result;
-//                 $code = 200;
-//             } else {
-//                 $errmsg = "No users found.";
-//                 $code = 404;
-//             }
-//         } catch (\PDOException $e) {
-//             $errmsg = $e->getMessage();
-//             $code = 500;
-//         }
-//         return $this->generateResponse($data, $errmsg ? "failed" : "success", $errmsg ? $errmsg : "Successfully retrieved users.", $code);
-//     }
-    
-    
-
-//     public function getSurveys($surveyId = null) {
-//         $condition = "1=1";
-//         if ($surveyId) {
-//             $condition .= " AND survey_id = " . $surveyId;
-//         }
-
-//         $result = $this->getDataByTable('surveys_tbl', $condition, $this->pdo);
-//         if ($result['code'] == 200) {
-//             return $this->generateResponse($result['data'], "success", "Successfully retrieved surveys.", $result['code']);
-//         }
-//         return $this->generateResponse(null, "failed", $result['errmsg'], $result['code']);
-//     }
-
-//     public function getQuestions($questionId = null) {
-//         $condition = "1=1";
-//         if ($questionId) {
-//             $condition .= " AND question_id = " . $questionId;
-//         }
-//         $result = $this->getDataByTable('questions_tbl', $condition, $this->pdo);
-
-//         if ($result['code'] == 200) {
-//             return $this->generateResponse($result['data'], "success", "Successfully retrieved questions.", $result['code']);
-//         }
-//         return $this->generateResponse(null, "failed", $result['errmsg'], $result['code']);
-//     }
-
-
-//     public function getResponses($responseId = null) {
-//         $condition = "1=1";
-//         if ($responseId) {
-//             $condition .= " AND response_id = " . $responseId;
-//         }
-//         $result = $this->getDataByTable('responses_tbl', $condition, $this->pdo);
-
-//         if ($result['code'] == 200) {
-//             return $this->generateResponse($result['data'], "success", "Successfully retrieved responses.", $result['code']);
-//         }
-//         return $this->generateResponse(null, "failed", $result['errmsg'], $result['code']);
-//     }
-// }
-
 class Get extends Common {
     protected $pdo;
 
     public function __construct(\PDO $pdo) {
         $this->pdo = $pdo;
     }
+    public function getLogs($date) {
+        $filename = "./logs" . $date . ".log";
+        $logs = [];
+        $remarks = "success";
+        $message = "Successfully retrieved logs.";
+        
+        try {
+            $file = new SplFileObject($filename);
+            while (!$file->eof()) {
+                array_push($logs, $file->fgets());
+            }
+        } catch (Exception $e) {
+            $remarks = "failed";
+            $message = $e->getMessage();
+        }
 
+        $this->logger('system', 'getLogs', $remarks === 'success' ? 'Retrieved logs' : 'Failed to retrieve logs');
+
+        return $this->generateResponse(array("logs" => $logs), $remarks, $message, 200);
+    }
+
+        public function getUserById($userId) {
+            $sqlString = "SELECT * FROM users_tbl WHERE user_id = ?";
+            $data = [];
+            $errmsg = "";
+            $code = 0;
+        
+            try {
+                $stmt = $this->pdo->prepare($sqlString);
+                $stmt->execute([$userId]);
+        
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+                if ($result) {
+                    $data = $result;
+                    $code = 200;
+                } else {
+                    $errmsg = "User not found.";
+                    $code = 404;
+                }
+            } catch (\PDOException $e) {
+                $errmsg = $e->getMessage();
+                $code = 500;
+            }
+        
+            $this->logger('user_' . $userId, 'getByUserId' ,$errmsg ?'Failed to retrieve the user' : 'Retrieve user');
+            return $this->generateResponse(
+                $data,
+                $errmsg ? "failed" : "success",
+                $errmsg ? $errmsg : "Successfully retrieved user.",
+                $code
+            );
+        }
+        
     public function getAllUsers() {
         $sqlString = "SELECT * FROM users_tbl";
         $data = [];
@@ -106,39 +83,53 @@ class Get extends Common {
             $errmsg = $e->getMessage();
             $code = 500;
         }
+        $this->logger('admin' , 'getAllUsers' ,$errmsg ? "Failed to retrieve the user" : "Retrieve all user");
+
         return $this->generateResponse($data, $errmsg ? "failed" : "success", $errmsg ? $errmsg : "Successfully retrieved users.", $code);
     }
 
     public function getSurveys($surveyId = null) {
+        $currentSurveyId = $surveyId ?? 'none';
         $condition = "1=1";
+        
         if ($surveyId) {
             $condition .= " AND survey_id = " . $surveyId;
         }
-
+    
+        $this->logger( 'survey_'.$currentSurveyId, 'getSurveys', $surveyId ? "Retrieve survey with ID: $surveyId" : "Retrieve all surveys");
         $result = $this->getDataByTable('surveys_tbl', $condition, $this->pdo);
+        
         if ($result['code'] == 200) {
             return $this->generateResponse($result['data'], "success", "Successfully retrieved surveys.", $result['code']);
         }
+        
+        $this->logger($currentSurveyId, 'getSurveys', "Failed to retrieve surveys: " . $result['errmsg']);
         return $this->generateResponse(null, "failed", $result['errmsg'], $result['code']);
     }
-
+    
     public function getQuestions($questionId = null) {
+        $currentquestionId = $questionId ?? 'none';
         $condition = "1=1";
         if ($questionId) {
             $condition .= " AND question_id = " . $questionId;
         }
+        $this->logger('question_'.$currentquestionId, 'getQuestions', $questionId ? "Retrieve questions with ID: $questionId" : "Retrieve all questions");
         $result = $this->getDataByTable('questions_tbl', $condition, $this->pdo);
 
         if ($result['code'] == 200) {
             return $this->generateResponse($result['data'], "success", "Successfully retrieved questions.", $result['code']);
         }
+        $this->logger($currentquestionId, 'getQuestions', "Failed to retrieve questions". $result['errmsg']);
         return $this->generateResponse(null, "failed", $result['errmsg'], $result['code']);
     }
 
     public function getResponses($responseId = null) {
         $condition = "1=1";
+        $params = [];
+
         if ($responseId) {
             $condition .= " AND responses_tbl.response_id = ?";
+            $params[] = $responseId;
         }
 
         $sqlString = "
@@ -161,6 +152,7 @@ class Get extends Common {
         $code = 0;
 
         try {
+            $this->logger('response_'.$responseId ? $responseId : 'all', 'getResponses', $responseId ? "Retrieve response with ID: $responseId" : "Retrieve all responses");
             $stmt = $this->pdo->prepare($sqlString);
             if ($responseId) {
                 $stmt->execute([$responseId]);
@@ -181,6 +173,7 @@ class Get extends Common {
             $errmsg = $e->getMessage();
             $code = 500;
         }
+        $this->logger('response_'.$responseId ? $responseId : 'all', 'getResponses', $errmsg ? "Failed to retrieve responses: $errmsg" : "Succesfully retrieve response with questions.");
 
         return $this->generateResponse(
             $data,
@@ -189,6 +182,7 @@ class Get extends Common {
             $code
         );
     }
+
     public function getAllQuestionsAndResponses() {
         $sqlString = "
             SELECT 
