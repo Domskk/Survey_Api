@@ -5,20 +5,16 @@ require_once "./modules/Post.php";
 require_once "./modules/Patch.php";
 require_once "./modules/Delete.php";
 require_once "./modules/Auth.php";
-require_once "./modules/Crypt.php";
 
-// define("SECRET_KEY", "My_secret_key
 
 $db = new Connection();
 $pdo = $db->connect();
 
-// // instantiate classes
 $post = new Post($pdo);
 $patch = new Patch($pdo);
 $get = new Get($pdo);
 $delete = new Delete($pdo);
 $auth = new Authentication($pdo);
-$crypt = new Crypt(SECRET_KEY);
 
 if (isset($_REQUEST['request'])) {
     $request = explode("/", $_REQUEST['request']);
